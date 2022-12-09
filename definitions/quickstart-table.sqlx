@@ -1,0 +1,13 @@
+config {
+  type: "table",
+  assertions: {
+    rowConditions: [
+      'count >= 0'
+    ]
+  }
+}
+
+SELECT
+  fruit,
+  count
+FROM ${ref("quickstart-source")}
