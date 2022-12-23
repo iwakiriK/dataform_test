@@ -1,0 +1,7 @@
+config { type: "incremental" }
+
+SELECT test from ${ref("first_view")}
+
+-- ${when(incremental(), `WHERE 1 = 1`) }
+${ when(incremental(), `WHERE test > (SELECT MAX(test) FROM ${self()})`) }
+--${ when(incremental(), `WHERE test > 8`) }
