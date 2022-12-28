@@ -1,7 +1,25 @@
-config { type: "incremental" }
+config {
+  type: "incremental",
+  bigquery: {
+    partitionBy: "dt",
+    requirePartitionFilter: true
+  }
+}
 
-SELECT test from ${ref("first_view")}
+with ga as (
+select 
+'2022-12-01' as dt
+, 10 as num
+)
+, i3 as (
+select 
+'2022-12-01' as dt
+, 15 as num
+)
+select 
+ga.dt
+,ga.num + i3.num
+from ga left outer join i3 
+on ga.dt = i3.dt 
 
--- ${when(incremental(), `WHERE 1 = 1`) }
-${ when(incremental(), `WHERE test > (SELECT MAX(test) FROM ${self()})`) }
---${ when(incremental(), `WHERE test > 8`) }
+${ when(incremental(), `where ga.dt > (SELECT MAX(dt) FROM ${self()})`) }
